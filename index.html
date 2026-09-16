@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kana Typing Practice</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+        #prompt {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #3498db;
+        }
+        #kanaInput {
+            font-size: 2.2em;
+            padding: 12px;
+            width: 180px;
+            text-align: center;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        #kanaInput:focus {
+            border-color: #3498db;
+        }
+        #feedback {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: bold;
+            min-height: 1.6em; /* Reserve space */
+        }
+        .correct {
+            color: #27ae60;
+        }
+        .incorrect {
+            color: #e74c3c;
+        }
+        button {
+            margin-top: 30px;
+            padding: 12px 25px;
+            font-size: 1.3em;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kana Typing Practice</h1>
+        <p>Type the Hiragana character for the Romaji below:</p>
+        <div id="prompt"></div>
+        <input type="text" id="kanaInput" placeholder="Type here..." autofocus>
+        <div id="feedback"></div>
+        <button id="nextButton">Next Character</button>
+    </div>
+
+    <script>
+        // Data for Hiragana characters and their Romaji equivalents
+        // This array can be expanded with more characters (e.g., Katakana, combinations)
+        const kanaData = [
+            { romaji: 'a', kana: 'あ' }, { romaji: 'i', kana: 'い' }, { romaji: 'u', kana: 'う' }, { romaji: 'e', kana: 'え' }, { romaji: 'o', kana: 'お' },
+            { romaji: 'ka', kana: 'か' }, { romaji: 'ki', kana: 'き' }, { romaji: 'ku', kana: 'く' }, { romaji: 'ke', kana: 'け' }, { romaji: 'ko', kana: 'こ' },
+            { romaji: 'sa', kana: 'さ' }, { romaji: 'shi', kana: 'し' }, { romaji: 'su', kana: 'す' }, { romaji: 'se', kana: 'せ' }, { romaji: 'so', kana: 'そ' },
+            { romaji: 'ta', kana: 'た' }, { romaji: 'chi', kana: 'ち' }, { romaji: 'tsu', kana: 'つ' }, { romaji: 'te', kana: 'て' }, { romaji: 'to', kana: 'と' },
+            { romaji: 'na', kana: 'な' }, { romaji: 'ni', kana: 'に' }, { romaji: 'nu', kana: 'ぬ' }, { romaji: 'ne', kana: 'ね' }, { romaji: 'no', kana: 'の' }
+        ];
+
+        let currentKanaIndex;
+        const promptElement = document.getElementById('prompt');
+        const kanaInputElement = document.getElementById('kanaInput');
+        const feedbackElement = document.getElementById('feedback');
+        const nextButton = document.getElementById('nextButton');
+
+        function getRandomKana() {
+            // Selects a random Kana character from the data array to prompt the user
+            currentKanaIndex = Math.floor(Math.random() * kanaData.length);
+            promptElement.textContent = kanaData[currentKanaIndex].romaji; // Display the Romaji prompt
+            kanaInputElement.value = ''; // Clear previous input
+            feedbackElement.textContent = ''; // Clear feedback message
+            kanaInputElement.focus(); // Focus input for immediate typing
+        }
+
+        function checkInput() {
+            const userInput = kanaInputElement.value.trim();
+            const correctKana = kanaData[currentKanaIndex].kana;
+
+            // This is the core concept demonstrated by the article:
+            // The user types Romaji (e.g., 'ka') which is converted to Kana (e.g., 'か') by an IME.
+            // We then compare the actual Kana output from the user's input field with the correct Kana.
+            if (userInput === correctKana) {
+                feedbackElement.textContent = 'Correct! ✅';
+                feedbackElement.className = 'correct';
+                // Automatically move to the next character after a short delay for feedback
+                setTimeout(getRandomKana, 1000);
+            } else {
+                feedbackElement.textContent = 'Incorrect. Try again. ❌';
+                feedbackElement.className = 'incorrect';
+            }
+        }
+
+        // Event listener for the input field to check on Enter key press
+        kanaInputElement.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                checkInput();
+            }
+        });
+
+        // Event listener for the "Next Character" button
+        nextButton.addEventListener('click', getRandomKana);
+
+        // Initialize the first character when the page loads
+        getRandomKana();
+    </script>
+</body>
+</html>
